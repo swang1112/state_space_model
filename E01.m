@@ -15,6 +15,7 @@ D = A(:,1:3);
 F = A(:,[2,4]);
 
 %% 3.
+% ich gehe davon das dass es mit matrix B gemeint ist.
 B'
 inv(B)
 det(B)
