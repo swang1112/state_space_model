@@ -30,7 +30,47 @@ z_var - var(z)
 z_std - std(z)
 
 %% 5.
-clc
-for i=1:100
-    if
+z_sorted = z;
+for i=1:100 
+    for j=1:i
+        if z_sorted(j) > z_sorted(i)
+            foo = z_sorted(j);
+            z_sorted(j) = z_sorted(i);
+            z_sorted(i) = foo;
+        end
+    end
 end
+all(z_sorted == sort(z))
+
+%% 6.
+alpha = 0.1;
+Ci = z_mean + z_std * tinv(1-alpha/2, 99) * [-1 ,1]
+hist(z);
+
+%% 7.
+s = randn(100, 1);
+s = sqrt(2)*s + 1;
+
+%% 8.
+X = randn(100, 1);
+u = randn(100, 1);
+beta = 5;
+y = beta * X + u;
+beta_hat = inv(X'*X) * X'* y
+beta_hat - beta
+
+% why is it not exactly 5? 
+% Das ist nicht zu erwarten (beduetet auch nichts). 
+% beta_hat wäre genau 5, wenn Fehlerterm deterministisch wäre, also u gleich
+% 0 für jede Beobachtung.
+
+%% 9.
+Beta = zeros(1000,1);
+for r=1:1000
+    X = randn(100, 1);
+    u = randn(100,1);
+    y = beta * X + u;
+    Beta(r) = inv(X'*X) * X'* y;
+end
+mean(Beta)
+hist(Beta)
