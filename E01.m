@@ -16,9 +16,9 @@ F = A(:,[2,4]);
 
 %% 3.
 % ich gehe davon das dass es mit matrix B gemeint ist.
-B'
-inv(B)
-det(B)
+A'
+inv(A'*A)
+det(A'*A)
 
 %% 4.
 z = randn(100,1);
