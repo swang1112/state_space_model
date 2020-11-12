@@ -75,3 +75,5 @@ for r=1:1000
 end
 mean(Beta)
 hist(Beta)
+
+%% blablablablkdsafjkladjsfkl
