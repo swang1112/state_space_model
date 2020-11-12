@@ -55,11 +55,6 @@ title('$$y = X\hat{\beta}$$ vs. $$y = X\beta + u$$', 'Interpreter', 'Latex');
 %% 3.
 my_url = 'https://fred.stlouisfed.org/';
 req = fred(my_url);
-mnemo = 'CPALTT01USM661S';
-data = fetch(req, mnemo);
-close(req);
-
-
 
 
 
