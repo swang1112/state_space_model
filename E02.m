@@ -56,7 +56,9 @@ title('$$y = X\hat{\beta}$$ vs. $$y = X\beta + u$$', 'Interpreter', 'Latex');
 % aquire data (monthly freq)
 req = fred;
 mnemo = 'CPIAUCSL';
-raw = fetch(req, mnemo);
+startdate = '01/01/1955';
+enddate = '10/01/2020';
+raw = fetch(req, mnemo, startdate, enddate);
 close(req);
 
 % transform data, pi = annulized inflation in cpi
@@ -66,7 +68,7 @@ pi_lag = pi(1:(end-1));
 pi = pi(2:end);
 Tob = length(pi);
 %%
-foo = [ones(length(Tob), 1), pi_lag];
+foo = [ones(Tob, 1), pi_lag];
 foo_ols = OLS(foo, pi);
 mu_hat = foo_ols(1);
 b_hat = foo_ols(2);
@@ -74,10 +76,14 @@ pi_lr = mu_hat / (1 - b_hat);
 
 
 %% 4.
-
-
+j = 200;
+pi_lr_rolling = rolling_longrun_AR1(foo, pi, j);
+plot(pi_lr_rolling,'LineWidth',2)
+title(sprintf('Estimated long-run inflation rate using a rolling window of %i periods', j));
+line([0, length(pi_lr_rolling)], [pi_lr, pi_lr], 'Color', 'r', 'Linewidth', 1.5)
 
 %% 5.
 plot(1:Tob, pi)
-line([0, Tob], [pi_lr, pi_lr]);
+line([0, Tob], [pi_lr, pi_lr], 'Color', 'r', 'Linewidth', 1.5);
+title('Annulized inflation in CPI and estimated static long-run rate')
 
