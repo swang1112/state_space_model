@@ -53,14 +53,31 @@ title('$$y = X\hat{\beta}$$ vs. $$y = X\beta + u$$', 'Interpreter', 'Latex');
 [beta_hat, beta_se] = OLS(X, y)
 
 %% 3.
-my_url = 'https://fred.stlouisfed.org/';
-req = fred(my_url);
-mnemo = 'CPALTT01USM661S';
-data = fetch(req, mnemo);
+% aquire data (monthly freq)
+req = fred;
+mnemo = 'CPIAUCSL';
+raw = fetch(req, mnemo);
 close(req);
 
+% transform data, pi = annulized inflation in cpi
+CPI = raw.Data(:,2);
+pi = diff(log(CPI))*100*12;
+pi_lag = pi(1:(end-1));
+pi = pi(2:end);
+Tob = length(pi);
+%%
+foo = [ones(length(Tob), 1), pi_lag];
+foo_ols = OLS(foo, pi);
+mu_hat = foo_ols(1);
+b_hat = foo_ols(2);
+pi_lr = mu_hat / (1 - b_hat);
+
+
+%% 4.
 
 
 
-
+%% 5.
+plot(1:Tob, pi)
+line([0, Tob], [pi_lr, pi_lr]);
 
