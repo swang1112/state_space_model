@@ -83,7 +83,7 @@ title(sprintf('Estimated long-run inflation rate using a rolling window of %i pe
 line([0, length(pi_lr_rolling)], [pi_lr, pi_lr], 'Color', 'r', 'Linewidth', 1.5)
 
 %% 5.
-Tob = length(pi_lr_rolling)
+Tob = length(pi_lr_rolling);
 plot(1:Tob, pi(1:Tob))
 line([0, Tob], [pi_lr, pi_lr], 'Color', 'r', 'Linewidth', 1.5);
 line([0, length(pi_lr_rolling)], [pi_lr, pi_lr], 'Color', 'r', 'Linewidth', 1.5);
@@ -93,6 +93,5 @@ title('Annulized inflation in CPI and estimated static long-run rate')
 figure; 
 plot(pi(1:size(pi_lr_rolling,1)), 'b', 'LineWidth', 1.5); ylim([-10, 25]); hold on; 
 plot(pi_lr_rolling, 'r',  'LineWidth',1.5); 
-yline(pi_lr, 'g', 'LineWidth', 1.5);
-legend('Actual Inflation Rate', 'LR Inflation Rate (Rolling Window)','Static LR Inflation Rate '); 
-title('E2-3/5');
+line([0, length(pi_lr_rolling)], [pi_lr, pi_lr], 'Color', 'g', 'Linewidth', 1.5);
+legend('Inflation in CPI', sprintf('long-run rate (dynamic rolling window %i)',j),' long-run rate (static)'); 
