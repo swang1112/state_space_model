@@ -32,7 +32,7 @@ z_std - std(z)
 
 %% 5.
 z_sorted = z;
-for i=1:100 
+for i=2:100 
     for j=1:i
         if z_sorted(j) > z_sorted(i)
             foo = z_sorted(j);
