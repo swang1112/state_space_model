@@ -12,7 +12,6 @@ y = cumsum(e, 1);
 
 Critical_val = quantile(DF_dist, [.01, .05, .10])
 mean(alpha)
-mean(DF_dist)
 hist(DF_dist, 500)
 
 %% Stationary AR(1)
