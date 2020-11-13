@@ -89,3 +89,9 @@ line([0, Tob], [pi_lr, pi_lr], 'Color', 'r', 'Linewidth', 1.5);
 line([0, length(pi_lr_rolling)], [pi_lr, pi_lr], 'Color', 'r', 'Linewidth', 1.5);
 title('Annulized inflation in CPI and estimated static long-run rate')
 
+figure; 
+plot(pi(1:size(LR_pi,1)), 'b', 'LineWidth', 1.5); ylim([-10, 25]); hold on; 
+plot(LR_pi, 'r',  'LineWidth',1.5); 
+yline(LR_pi_s, 'g', 'LineWidth', 1.5), 
+legend('Actual Inflation Rate', 'LR Inflation Rate (Rolling Window)','Static LR Inflation Rate '); 
+title('E2-3/5');
