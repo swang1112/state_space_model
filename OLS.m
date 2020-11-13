@@ -6,5 +6,5 @@ function [beta_hat, beta_se] = OLS(X, y)
 beta_hat = inv(X'*X) * X'* y;
 SSR = y'* y - beta_hat' * X' * y;
 sigma_hat = SSR / (T - K);
-beta_se = sqrt(sigma_hat) * diag(inv(X'*X));
+beta_se = sqrt(sigma_hat * diag(inv(X'*X)));
 end
