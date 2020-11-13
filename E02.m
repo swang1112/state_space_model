@@ -76,14 +76,16 @@ pi_lr = mu_hat / (1 - b_hat);
 
 
 %% 4.
-j = 200;
+j = 50;
 pi_lr_rolling = rolling_longrun_AR1(foo, pi, j);
 plot(pi_lr_rolling,'LineWidth',2)
 title(sprintf('Estimated long-run inflation rate using a rolling window of %i periods', j));
 line([0, length(pi_lr_rolling)], [pi_lr, pi_lr], 'Color', 'r', 'Linewidth', 1.5)
 
 %% 5.
-plot(1:Tob, pi)
+Tob = length(pi_lr_rolling)
+plot(1:Tob, pi(1:Tob))
 line([0, Tob], [pi_lr, pi_lr], 'Color', 'r', 'Linewidth', 1.5);
+line([0, length(pi_lr_rolling)], [pi_lr, pi_lr], 'Color', 'r', 'Linewidth', 1.5);
 title('Annulized inflation in CPI and estimated static long-run rate')
 
