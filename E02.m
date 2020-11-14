@@ -1,5 +1,5 @@
 %_____%
-% E01 %
+% E02 %
 %_____%
 
 clc
@@ -76,7 +76,7 @@ pi_lr = mu_hat / (1 - b_hat);
 
 
 %% 4.
-j = 50;
+j = 40;
 pi_lr_rolling = rolling_longrun_AR1(foo, pi, j);
 plot(pi_lr_rolling,'LineWidth',2)
 title(sprintf('Estimated long-run inflation rate using a rolling window of %i periods', j));
