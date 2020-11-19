@@ -16,8 +16,10 @@ function [alpha, P, v, F] = local_level_filter(y, alpha_0, P_0, sigma_obs, sigma
     P(1) = P_0;
     
     for t = 2:Tob
+        % alpha_temp = E[alpha_t | Y_{t-1}]
         alpha_tmp = alpha(t-1);
         P_tmp = P(t-1) + sigma_trans;
+        
         v(t) = y(t) - alpha_tmp;
         F(t) = P_tmp + sigma_obs;
         
