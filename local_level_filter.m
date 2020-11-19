@@ -5,11 +5,12 @@ function [alpha, P, v, F] = local_level_filter(y, alpha_0, P_0, sigma_obs, sigma
 %   P_0: initial state var
 %   sigma_obs: error variance in the observation equation
 %   signa_trans: error variance in the transition equation
+
     Tob = length(y);
-    alpha = zeros(Tob,1);
-    P = zeros(Tob,1);
-    v = zeros(Tob,1);
-    F = zeros(Tob,1);
+    alpha = zeros(Tob,1);   % conditional state expectation
+    P = zeros(Tob,1);       % conditional state variance
+    v = zeros(Tob,1);       % conditional error expectation
+    F = zeros(Tob,1);       % conditional error variance
     
     % initialization
     alpha(1) = alpha_0;
