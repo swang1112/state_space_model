@@ -37,5 +37,6 @@ plot(1:Tob, alpha(:,1), 'LineWidth', 1.5);
 xlim([0,Tob]);
 title("Trend");
 
+%% MLE
 
 
