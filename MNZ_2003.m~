@@ -1,0 +1,85 @@
+clc
+clear
+addpath('MNZ');
+load('data.mat');
+Tob = length(data);
+
+data = data * 100;
+
+% Known parameters
+A   = 0;
+X   = zeros(Tob, 1);
+H   = [1, 1, 0];
+Mu  = [0.8119; 0; 0];
+Sigma_obs = 0;
+Sigma_trans = [0.6893, 0, 0; 0, 0.6199, 0; 0, 0, 0];
+
+phi_1 = 1.5305;
+phi_2 = -0.6097;
+F   = [1, 0, 0; 0, phi_1, phi_2; 0, 1, 0];
+
+
+ar2_cor_l1 = phi_1 / (1 - phi_2);
+ar2_cor_l2 = phi_1 * ar2_cor_l1 + phi_2;
+ar2_var = 0.6199 / (1 - phi_1 * ar2_cor_l1 - phi_2 * ar2_cor_l2);
+
+
+alpha_0 = [data(1), 0, 0];
+P_0 = [10^4, 0, 0; 0, ar2_var, ar2_cor_l1*ar2_var; 0, ar2_cor_l1*ar2_var, ar2_var];
+[alpha, P] = Kalman_basic(data, alpha_0', P_0, A, X, H, F, Mu, Sigma_obs, Sigma_trans, 0);
+
+subplot(1,2,1);
+plot(1:Tob, alpha(:,1), 'LineWidth', 1.5);
+xlim(0,
+line([1,Tob],[0,0]);
+title("Trend");
+subplot(1,2,2);
+plot(1:Tob, alpha(:,2), 'LineWidth', 1.5)
+line([1,Tob],[0,0]);
+title("Cycle");
+%%
+% Plot
+%subplot(2,2,1);
+%plot(1:Tob, [data, alpha(:,1)], 'LineWidth', 1.5);
+%title("Data and Trend");
+%subplot(2,2,2);
+%plot(1:Tob,  squeeze(P(1,1,:)));
+%title("Trend Variance");
+%subplot(2,2,3);
+%plot(1:Tob, [data, alpha(:,2)], 'LineWidth', 1.5);
+%title("Data and Cycle");
+%subplot(2,2,4);
+%plot(1:Tob,  squeeze(P(2,2,:)));
+%title("Cycle Variance");
+
+%%
+clc
+clear
+addpath('MNZ');
+load('data.mat');
+Tob = length(data);
+
+% Known parameters
+A   = 0;
+X   = zeros(Tob, 1);
+H   = [1, 1, 0];
+Mu  = [0.8119; 0; 0];
+Sigma_obs = 0;
+Sigma_trans = [0.6893, 0, 0; 0, 0.6199, 0; 0, 0, 0];
+
+phi_1 = 1.5305;
+phi_2 = -0.6097;
+F   = [1, 0, 0; 0, phi_1, phi_2; 0, 1, 0];
+
+
+ar2_cor_l1 = phi_1 / (1 - phi_2);
+ar2_cor_l2 = phi_1 * ar2_cor_l1 + phi_2;
+ar2_var = 0.6199 / (1 - phi_1 * ar2_cor_l1 - phi_2 * ar2_cor_l2);
+
+alpha_0 = [data(1), 0, 0];
+P_0 = [10^4, 0, 0; 0, ar2_var, ar2_cor_l1*ar2_var; 0, ar2_cor_l1*ar2_var, ar2_var];
+[beta_ttm1,P_ttm1, beta_tt,P_tt, beta_tT,P_tT, J_t, f_ttm1, ita_ttm1] = kalman(alpha_0, P_0, A, H, Sigma_obs, Sigma_trans, F, repmat(Mu, [1,1,Tob]), data', X', 3);
+
+
+alpha = squeeze(beta_tT)';
+plot(1:Tob, alpha(:,1:2), 'LineWidth', 1.5);
