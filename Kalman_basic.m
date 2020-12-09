@@ -25,8 +25,6 @@ function [alpha, P, pred_error, pred_error_cov] = Kalman_basic(y, alpha_0, P_0, 
     if Smooth == 1
         P_10s           = repmat(eye(r), [1,1,Tob]);
         alpha_10s       = zeros(Tob,r);      
-        %P_10s(:,:,1)    = P_0;
-        %alpha_10s(1,:)  = alpha_0';
     end
 
     % init
