@@ -1,4 +1,4 @@
-function [alpha, P, pred_error, pred_error_cov] = Kalman_basic(y, alpha_0, P_0, A, X, H, F, Mu, Sigma_obs, Sigma_trans, Smooth)
+function [alpha, P, LogLike, pred_error, pred_error_cov] = Kalman_kernel(y, alpha_0, P_0, A, X, H, F, Mu, Sigma_obs, Sigma_trans, Smooth)
 %   y:              Txn matrix, data matrix of obs
 %   alpha_0:        rx1 vector, init state 
 %   P_0:            rxr matrix, init state conditional covar matrix
@@ -30,6 +30,7 @@ function [alpha, P, pred_error, pred_error_cov] = Kalman_basic(y, alpha_0, P_0, 
     % init
     alpha(1,:)  = alpha_0';
     P(:,:,1)    = P_0;
+    LogLike     = 0;
 
     for t = 2:Tob;
         % prediction state
@@ -39,6 +40,9 @@ function [alpha, P, pred_error, pred_error_cov] = Kalman_basic(y, alpha_0, P_0, 
         % prediction obs
         v_10 = y(t,:)' - H * alpha_10 - A * X(t,:)';
         f_10 = H * P_10 * H' + Sigma_obs;
+        
+        % Log-likelihood 
+        LogLike = LogLike - (n/2)*log(2*pi) - 1/2*(log(det(f_10)) + v_10'*inv(f_10)*v_10);
     
         % update
         K        = P_10 * H' * inv(f_10);
