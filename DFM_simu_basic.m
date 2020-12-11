@@ -1,4 +1,4 @@
-function [y, F, eps] = DFM_simu_basic(Tob, p_f, p_e, Phi_f, Phi_e, sigma_f, sigma_e, Loading, burn)
+function [y, F, eps] = DFM_simu_basic(Tob, r, p_f, p_e, Phi_f, Phi_e, sigma_f, sigma_e, Loading, burn)
 % Simulate basic DFM with both common and idiosyncratic factors follwing 
 % AR(1) processes
 % 
@@ -7,6 +7,7 @@ function [y, F, eps] = DFM_simu_basic(Tob, p_f, p_e, Phi_f, Phi_e, sigma_f, sigm
 %
 %
 % Tob       int, number of total observations
+% r         int, number of common factors
 % p_f 		int, number of lags in common factors
 % p_e 		int, number of lags in idiosyncratic components
 % Phi_f     rp_fxrp_f matrix, AR coeff matrix of common factors (companion form)
@@ -19,7 +20,11 @@ function [y, F, eps] = DFM_simu_basic(Tob, p_f, p_e, Phi_f, Phi_e, sigma_f, sigm
 
 % number of common factors
 [rp, ~] = size(Phi_f);
-r 		= rp / p_f;
+r_star	= rp / p_f;
+
+if r_star ~= r
+    error('Phi_f should be specified in companion form with dimension (rp x rp)!')
+end
 
 % number of idiosyncratic components
 [Np, ~] = size(Phi_e);
