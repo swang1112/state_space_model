@@ -29,7 +29,7 @@ N 		= Np / p_e;
 simus 	= Tob+burn;
 y 		= zeros(simus, N);
 F 		= zeros(simus, r*p_f);
-eps 	= zeros(simus, N*r);
+eps 	= zeros(simus, N*p_e);
 
 % initial value
 F(1,:) 	= rand(1, r*p_f);
@@ -41,7 +41,7 @@ for t = 2:simus
 	eta_t = chol(sigma_e)*randn(N,1);
 
 	if p_f > 1
-		v_t = [v_t; zeros(N*(p_e - 1),1)];
+		v_t = [v_t; zeros(r*(p_f - 1),1)];
     else
 		v_t = v_t;
     end
