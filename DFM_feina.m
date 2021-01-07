@@ -31,7 +31,7 @@ sigma_eta = rand(N, 1); % variance of error term
 
 theta_true = [phi; rho; gamma; sigma_eta]; 
 
-[y, G, eps] = DFM_simul(T, N, rho, phi, gamma, sigma_eta, sigma_v); 
+[y, G, eps] = DFM_simul_feina(T, N, rho, phi, gamma, sigma_eta, sigma_v); 
 save y.mat
 
 %% ML

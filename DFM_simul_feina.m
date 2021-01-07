@@ -1,5 +1,5 @@
 %% Data simulation
-function[y, G, eps] = DFM_simul(T, N, rho, phi, gamma, sigma_eta, sigma_v);  
+function[y, G, eps] = DFM_simul_feina(T, N, rho, phi, gamma, sigma_eta, sigma_v);  
 
 T = T+50; 
 

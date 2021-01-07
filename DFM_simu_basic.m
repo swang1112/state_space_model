@@ -2,8 +2,9 @@ function [y, F, eps] = DFM_simu_basic(Tob, r, p_f, p_e, Phi_f, Phi_e, sigma_f, s
 % Simulate basic DFM with both common and idiosyncratic factors follwing 
 % AR(1) processes
 % 
-% ACTUNG: Factors are subjected to restrictions: E(F*F') is diagonal
-%         Loading*Loading' = eye(r)!!
+% ACTUNG: Factors are subjected to restrictions: E(F*F') is diagonal with
+%         DISTINCT elements (variances*T) on the diagonal! And:
+%         Loading*Loading' = eye(r)!! 
 %
 %
 % Tob       int, number of total observations
