@@ -21,7 +21,7 @@ Y   = y(2:Tob);
 T   = Tob - 1;
 
 iter    = 30000;
-burn    = iter - 1500;
+burn    = iter - 1000;
 
 % prior for beta = [mu; phi]: N(beta0, beta_s0)
 beta0   = zeros(2,1);
@@ -33,7 +33,7 @@ delta0  = 0.1;
 
 % starting values
 b0      = inv(X'*X)*X'*Y;
-sigma0  = (Y - X*b0)'*(Y - X*b0)/(T - 2);
+Sigma2  = (Y - X*b0)'*(Y - X*b0)/(T - 2);
 
 % memory reservation
 Betas   = zeros(1000, 2);
@@ -41,8 +41,8 @@ Sigma2s = zeros(1000, 1);
 
 for i = 1:iter
     % 1. beta|sigma2 
-    beta1   = inv(inv(beta_s0) + (1/sigma0) * X'*X) * (inv(beta_s0) * beta0 + (1/sigma0) * X'*Y);
-    beta_s1 = inv(inv(beta_s0) + (1/sigma0) * X'*X);
+    beta1   = inv(inv(beta_s0) + (1/Sigma2) * X'*X) * (inv(beta_s0) * beta0 + (1/Sigma2) * X'*Y);
+    beta_s1 = inv(inv(beta_s0) + (1/Sigma2) * X'*X);
     
     % draw under stationarity-restriction
     foo     = 0;
