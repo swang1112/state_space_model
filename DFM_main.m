@@ -1,6 +1,6 @@
 clc
 clear
-rng(37033);
+rng(37073);
 
 Tob     = 200;
 N       = 15;   % panel dimension
@@ -14,6 +14,13 @@ Phi_e   = diag(rand(N,1)*1.8-0.9);
 sigma_e = diag(rand(N,1)*0.6+0.6);
 Loading = randn(N,r);
 Loading = Loading * inv(chol(Loading'*Loading))'; % restriction: Loading'*Loading = eye(r)
+
+for i = 1:r;
+    if Loading(i,i) < 0;
+        Loading(:,i) = Loading(:,i) * -1;
+    end
+end
+
 %Loading = ones(N,1);
 burn    = 3000;
 
@@ -65,8 +72,8 @@ Sig_e_est = diag(exp(xopt((N+r*2+1):(N+r*2+N))))
     Sigma_trans = blkdiag(Sig_f_est, Sig_e_est);
     
       % initialization
-    alpha_0 = [repmat(y(1), [1,r]), zeros(1, N)];
-    P_0 = blkdiag(diag(repmat(10^4, [1,r])),Sig_e_est./(1-Phi_e_est.^2));
+    alpha_0 = [zeros(1, r), zeros(1, N)];
+    P_0 = blkdiag(Sig_f_est/(1-Phi_f_est^2),Sig_e_est./(1-Phi_e_est.^2));
     
     % KF
     Fact_est = Kalman_kernel(y, alpha_0', P_0, A, X, H, F, Mu, Sigma_obs, Sigma_trans, 0);
@@ -74,7 +81,7 @@ Sig_e_est = diag(exp(xopt((N+r*2+1):(N+r*2+N))))
     
     % plot
     figure2 = figure;
-    plot([Fact, Fact_est*-1], 'Linewidth', 2);
+    plot([Fact, Fact_est], 'Linewidth', 2);
     legend('true', 'est');
     title('True and Estimated Common Factor');
     saveas(figure2,'SS_DFM2.pdf')
@@ -101,6 +108,11 @@ function ll = DFM_obj1(x)
     Load  = reshape(x((2*(N+r)+1):end), [N,r]);
     Load  = Load * inv(chol(Load'*Load))';
     
+    for i = 1:r;
+        if Load(i,i) < 0;
+        Load(:,i) = Load(:,i) * -1;
+        end
+    end
     % state space model representation:
     A   = 0;
     X   = zeros(Tob, 1);
@@ -111,8 +123,8 @@ function ll = DFM_obj1(x)
     Sigma_trans = blkdiag(Sig_f, Sig_e);
     
     % initialization
-    alpha_0 = [repmat(y(1), [1,r]), zeros(1, N)];
-    P_0 = blkdiag(diag(repmat(10^5, [1,r])),Sig_e./(1-Phi_e.^2));
+    alpha_0 = [zeros(1, r), zeros(1, N)];
+    P_0 = blkdiag(Sig_f/(1-Phi_f^2),Sig_e./(1-Phi_e.^2));
     
     % compute log-likelihood
     [~,~,ll] = Kalman_kernel(y, alpha_0', P_0, A, X, H, F, Mu, Sigma_obs, Sigma_trans, 0);
