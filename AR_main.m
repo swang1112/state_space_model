@@ -3,8 +3,8 @@ clc
 clear
 rng(37073);
 
-Tob     = 200; % total observation
-mu      = 0.3;
+Tob     = 800; % total observation
+mu      = 0.2;
 phi     = 0.9;
 sigma2  = 1.2;
 
@@ -16,9 +16,10 @@ end
 %plot(y);
 %% Gibbs sampling
 % model representation
-X   = [ones(Tob-1, 1), y(1:Tob-1)];
-Y   = y(2:Tob);
 T   = Tob - 1;
+X   = [ones(T, 1), y(1:Tob-1)];
+Y   = y(2:end);
+
 
 iter    = 30000;
 burn    = iter - 1000;
