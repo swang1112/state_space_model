@@ -3,10 +3,10 @@ clc
 clear
 rng(37073);
 
-Tob     = 800; % total observation
+Tob     = 200; % total observation
 mu      = 0.2;
 phi     = 0.9;
-sigma2  = 1.2;
+sigma2  = 1;
 
 y = zeros(Tob,1);
 for t = 2:Tob
@@ -17,11 +17,11 @@ end
 %% Gibbs sampling
 % model representation
 T   = Tob - 1;
-X   = [ones(T, 1), y(1:Tob-1)];
+X   = [ones(T, 1) y(1:Tob-1)];
 Y   = y(2:end);
 
 
-iter    = 30000;
+iter    = 4000;
 burn    = iter - 1000;
 
 % prior for beta = [mu; phi]: N(beta0, beta_s0)
@@ -72,11 +72,11 @@ end
 
 %% print and plot
 [mu phi]
-median(Betas)
+mean(Betas)
 prctile(Betas, [5, 95])
 
 sigma2
-median(Sigma2s)
+mean(Sigma2s)
 prctile(Sigma2s, [5, 95])
 
 
