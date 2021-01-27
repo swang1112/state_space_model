@@ -25,9 +25,10 @@ beta    = [4.887, 4.501, 3.442, 3.282, 2.766];
 % initialization of Kalman Filter
 P_0     = [diag([1./(1-pi_i.^2), 1/(1-pi_w^2)]), eye(6); eye(6), eye(6)];
 [PU,PS,PV] = svd(P_0);
-rng(1234);
+rng(37073);
 omega_0 = randn(1,12) * PU * sqrt(PS)*PV';
 
+warning('off');
 [omega, P, cond_var, LogLike] = kalman_garch(data, omega_0, P_0, alpha, beta, pi_i, pi_w, delt_aw, delt_bw, delt_cw, delt_ai, delt_bi, delt_ci,var_eta);
 %% sates
 load('R_i.mat')
@@ -60,4 +61,12 @@ for pn = 1:N
 end
 
 
-%%
+%% does P converges? 
+figure(3);
+foo = 1;
+for pp = 1:12
+    subplot(4,3,foo);
+    plot(squeeze(P(pp,pp,:)));
+    legend('estimate', 'true');title('P'); axis tight;
+    foo = foo + 1;
+end

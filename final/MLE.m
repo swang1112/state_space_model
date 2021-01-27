@@ -78,7 +78,7 @@ b(43:47) = 0;
 x0 = rand(1,33)*0.8 + 0.1;
 x0(19:23) = 1e-4;
 warning('off');
-options = optimoptions(@fmincon, 'MaxFunctionEvaluations', 10000, 'MaxIterations', 50000);
+options = optimoptions(@fmincon, 'MaxFunctionEvaluations', 20000, 'MaxIterations', 50000);
 xopt = fmincon(@obj, x0, A, b, [],[],[],[],[], options);
 
 

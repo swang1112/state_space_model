@@ -78,7 +78,7 @@ omega_0 = randn(1,12) * PU * sqrt(PS)*PV';
 % sates
 load('R_i.mat')
 load('R_w.mat')
-figure(1);
+figure1=figure(1);
 foo = 1;
 subplot(2,3,foo);
 plot([ometa_est(:,N+1), R_w], 'Linewidth', 1);
@@ -91,11 +91,10 @@ for pn = 1:N
 end
 
 
-
 % conditional variances
 load('h_i.mat')
 load('h_w.mat')
-figure(2);
+figure2=figure(2);
 foo = 1;
 subplot(2,3,foo);
 plot([h_est(:,N+1), h_w], 'Linewidth', 1);
@@ -107,4 +106,5 @@ for pn = 1:N
     legend('estimate', 'true');title("conditional variances of ideosyncratic factor of country " + pn + " "); axis tight;
 end
 
-
+saveas(figure1, 'states.pdf')
+saveas(figure2, 'cond_var.pdf')
