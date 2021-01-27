@@ -1,6 +1,6 @@
 clc
 clear
-rng(37073);
+rng(1234);
 
 Tob     = 200;
 N       = 15;   % panel dimension

@@ -24,15 +24,16 @@ end
 
 [y, Fact, eps] = DFM_simu_basic(Tob, r, p_f, p_e, Phi_f_true, Phi_e_true, sigma_f_true, sigma_e_true, Loading_true, 3000);
 
-figure1 = figure;
+figure0 = figure;
 plot(y); hold on;
 plot(Fact, 'Linewidth', 4);
 title('Observations and Common Factor')
 hold off;
+saveas(figure0,'Gibbs_DFM0.pdf')
 
 %% Gibbs Sampling
 iter    = 8000;
-retain  = 1000;
+retain  = 2000;
 burn    = iter - retain;
 T       = Tob-1;
 
@@ -184,6 +185,10 @@ end
         SIG_E(:,:,ii-burn)   = Sigma_e;
     end
 
+    if mod(ii, 500) == 0
+        fprintf('Iter: %g \r', ii)
+    end
+        
 end
 
 %% print and plot
@@ -205,7 +210,7 @@ prctile(SIG_E,[5, 95],3)
 
 
 Geweke_test_Loading = zeros(N,2);
-figure(1);
+figure1 = figure(1);
 foo = 1;
 for n = 1:N
     subplot(N,3,foo);
@@ -221,10 +226,10 @@ for n = 1:N
     [z0, pval0] = geweke(squeeze(LOADING(n,:,:)), 0.1, 0.5);
     Geweke_test_Loading(n,:)  = [z0, pval0]; 
 end
-
+saveas(figure1,'Gibbs_DFM1.pdf')
 
 Geweke_test_Phi_e = zeros(N,2);
-figure(2);
+figure2 = figure(2);
 foo = 1;
 for n = 1:N
     subplot(N,3,foo);
@@ -240,9 +245,10 @@ for n = 1:N
     [z0, pval0] = geweke(squeeze(PHI_E(n,n,:)), 0.1, 0.5);
     Geweke_test_Phi_e(n,:) = [z0, pval0]; 
 end
+saveas(figure2,'Gibbs_DFM2.pdf')
 
 Geweke_test_sigma_e = zeros(N,2);
-figure(3);
+figure3 = figure(3);
 foo = 1;
 for n = 1:N
     subplot(N,3,foo);
@@ -258,8 +264,9 @@ for n = 1:N
     [z0, pval0] = geweke(squeeze(SIG_E(n,n,:)), 0.1, 0.5);
     Geweke_test_sigma_e(n,:) = [z0, pval0];
 end
+saveas(figure3,'Gibbs_DFM3.pdf')
 
-figure(4);
+figure4 = figure(4);
 subplot(2,2,1);
 hist(squeeze(PHI_F), 50);
 title("Phi_f (true: " + Phi_f_true + " )");
@@ -273,3 +280,4 @@ legend('True','Estimated');
 title('True and Estimated Common Factor');
 [z0, pval0] = geweke(squeeze(PHI_F), 0.1, 0.5);
 Geweke_test_PHI_F = [z0, pval0];
+saveas(figure4,'Gibbs_DFM4.pdf')
