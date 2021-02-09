@@ -79,9 +79,10 @@ x0 = rand(1,33)*0.8 + 0.1;
 x0(19:23) = 1e-4;
 warning('off');
 options = optimoptions(@fmincon, 'MaxFunctionEvaluations', 20000, 'MaxIterations', 50000);
-xopt = fmincon(@obj, x0, A, b, [],[],[],[],[], options);
+[xopt,~,~,~,~,~,hessian] = fmincon(@obj, x0, A, b, [],[],[],[],[], options);
 
-
+save('xopt', 'xopt');
+save('hessian', 'hessian');
 %% objective function
 function ll = obj(par)
 
@@ -117,7 +118,7 @@ rng(37073);
 omega_0 = randn(1,12) * PU * sqrt(PS)*PV';
 
 load('data')
-[~, ~, ~, ll] = kalman_garch(data, omega_0, P_0, alpha, beta, pi_i, pi_w, delt_aw, delt_bw, delt_cw, delt_ai, delt_bi, delt_ci,var_eta);
+[~, ~, ~, ll] = kalman_garch_uni(data, omega_0, P_0, alpha, beta, pi_i, pi_w, delt_aw, delt_bw, delt_cw, delt_ai, delt_bi, delt_ci,var_eta,1);
    ll = -ll;
 end
 

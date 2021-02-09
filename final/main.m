@@ -73,7 +73,7 @@ P_0     = [diag([1./(1-est_pi_i.^2), 1/(1-est_pi_w^2)]), eye(6); eye(6), eye(6)]
 rng(37073); 
 omega_0 = randn(1,12) * PU * sqrt(PS)*PV';
 
-[ometa_est,~,h_est] = kalman_garch(data, omega_0, P_0, est_alpha, est_beta, est_pi_i, est_pi_w, est_delt_aw, est_delt_bw, est_delt_cw, est_delt_ai, est_delt_bi, est_delt_ci, est_var_eta);
+[ometa_est,~,h_est] = kalman_garch(data, omega_0, P_0, est_alpha, est_beta, est_pi_i, est_pi_w, est_delt_aw, est_delt_bw, est_delt_cw, est_delt_ai, est_delt_bi, est_delt_ci, est_var_eta,1);
 
 % sates
 load('R_i.mat')

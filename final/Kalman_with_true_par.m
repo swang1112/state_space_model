@@ -1,5 +1,5 @@
 %%
-makedata
+%makedata
 clc
 clear
 load('data')
@@ -29,7 +29,7 @@ rng(37073);
 omega_0 = randn(1,12) * PU * sqrt(PS)*PV';
 
 warning('off');
-[omega, P, cond_var, LogLike] = kalman_garch(data, omega_0, P_0, alpha, beta, pi_i, pi_w, delt_aw, delt_bw, delt_cw, delt_ai, delt_bi, delt_ci,var_eta);
+[omega, P, cond_var, LogLike] = kalman_garch_uni(data, omega_0, P_0, alpha, beta, pi_i, pi_w, delt_aw, delt_bw, delt_cw, delt_ai, delt_bi, delt_ci,var_eta,1);
 %% sates
 load('R_i.mat')
 load('R_w.mat')

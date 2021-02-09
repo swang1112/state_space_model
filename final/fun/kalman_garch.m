@@ -1,4 +1,4 @@
-function [omega, P, cond_var, LogLike] = kalman_garch(data, omega_0, P_0, alpha, beta, pi_i, pi_w, delt_aw, delt_bw, delt_cw, delt_ai, delt_bi, delt_ci,var_eta)
+function [omega, P, cond_var, LogLike] = kalman_garch(data, omega_0, P_0, alpha, beta, pi_i, pi_w, delt_aw, delt_bw, delt_cw, delt_ai, delt_bi, delt_ci,var_eta, Smooth)
 %%
 %   y:              matrix, data matrix of obs
 %   omega_0:        vector, init state 
@@ -68,6 +68,7 @@ for t = 2:Tob;
     
     end
 %%
+    if Smooth == 1
     % smoothing
         % copy results from filtering
         omega_smo   = omega;
@@ -80,6 +81,7 @@ for t = 2:Tob;
         % replace filtering results
         omega   = omega_smo;
         P       = P_smo;
+    end
         
 
 end
