@@ -4,25 +4,25 @@ clc
 addpath('fun')
 load('xopt.mat')
 load('data.mat')
-load('hessian.mat')
 %%
 par_old = xopt';
 
-lr = 0.01;         % learning rate
+lr = 0.008;  % learning rate
 S  = eye(33) * lr; % update covaraiance
+%S  = chol(hessian)*lr;
 
 % setting priors
 % i) prior for [alpha'; beta']: gaussian
-loading0 = 0.1;
-loading0s= 0.5;
+loading0 = zeros(10,1)+0.1;
+loading0s= eye(10)*0.5;
 % ii) prior for [pi_i'; pi_w]: gaussian
-ar0 = 0;
-ar0s= 0.3;
+ar0 = zeros(6,1);
+ar0s= eye(6)*0.3;
 % iii) prior for [delt_bi'; delt_ci'; delt_bw; delt_cw]: IG
-garch_v0 = 1;
-garch_d0 = 1;
+garch_v0 = 5;
+garch_d0 = 0.3;
 % iv) prior for var_eta: IG
-eta_v0 = 1;
+eta_v0 = 5;
 eta_d0 = 0.01;
 
 % old poseterior
@@ -35,16 +35,17 @@ omega_0 = randn(1,12) * PU * sqrt(PS)*PV';
 
 [~, ~, ~, ll] = kalman_garch_uni(data, omega_0, P_0, alpha, beta, pi_i, pi_w, delt_aw, delt_bw, delt_cw, delt_ai, delt_bi, delt_ci,var_eta,0);
     
-foo = 0;
+foo = ll;
 for j = 1:5
-    foo = foo + foo + lgam(garch_v0, garch_d0, 1./delt_bi(j)) + lgam(garch_v0, garch_d0, 1./delt_ci(j)) + lgam(eta_v0, eta_d0, 1./var_eta(j));
+    foo = foo + lgam(garch_v0, garch_d0, 1./delt_bi(j)) + lgam(garch_v0, garch_d0, 1./delt_ci(j)) + lgam(eta_v0, eta_d0, 1./var_eta(j));
 end
-post_old = ll + foo + sum(log(mvnpdf([alpha'; beta'], loading0, loading0s))) + sum(log(mvnpdf([pi_i'; pi_w'], ar0, ar0s))) + lgam(garch_v0, garch_d0, 1./delt_bw) +  lgam( garch_v0, garch_d0, 1./delt_cw);
+post_old = foo + log(mvnpdf([alpha'; beta'], loading0, loading0s)) + log(mvnpdf([pi_i'; pi_w'], ar0, ar0s)) + lgam(garch_v0, garch_d0, 1./delt_bw) +  lgam( garch_v0, garch_d0, 1./delt_cw);
 
 iter = 4000;
 burn = 3000;
 nacc = 0; % # total draws
 out = zeros(iter-burn,33); % reserve memory
+
 %%
 for ii = 1:iter
     % 1. propose new par
@@ -53,9 +54,8 @@ for ii = 1:iter
     % 2. evaluate posterior at new draw
     [alpha, beta, pi_i, pi_w, delt_aw, delt_bw, delt_cw, delt_ai, delt_bi, delt_ci,var_eta] = getpar(par_new');
     % check parameter restrictions
-    if abs(pi_i) > 1 | abs(pi_w) >1 | delt_bw < 0 | delt_bw > 1 | delt_cw < 0 | delt_cw > 1 | delt_aw < 0 | delt_bi < 0 | delt_bi > 1 | delt_ci < 0 | delt_ci > 1 | delt_ai < 0 | var_eta < 0 
-        acc_prob = 0;
-    else
+    check = sum(abs(pi_i) > 1) + sum(abs(pi_w) >1) + sum(delt_bw < 0) + sum(delt_bw > 1) + sum(delt_cw < 0) + sum(delt_cw > 1) + sum(delt_aw < 0) + sum(delt_bi < 0) + sum(delt_bi > 1) + sum(delt_ci < 0) + sum(delt_ci > 1) + sum(delt_ai < 0) + sum(var_eta < 0 );
+    if check == 0
         % initialization of Kalman Filter
         P_0     = [diag([1./(1-pi_i.^2), 1/(1-pi_w^2)]), eye(6); eye(6), eye(6)];
         [PU,PS,PV] = svd(P_0);
@@ -65,16 +65,18 @@ for ii = 1:iter
         warning('off')
         [~, ~, ~, ll] = kalman_garch_uni(data, omega_0, P_0, alpha, beta, pi_i, pi_w, delt_aw, delt_bw, delt_cw, delt_ai, delt_bi, delt_ci,var_eta,0);
     
-        foo = 0;
+        foo = ll;
         for j = 1:5
             foo = foo + lgam(garch_v0, garch_d0, 1./delt_bi(j)) + lgam(garch_v0, garch_d0, 1./delt_ci(j)) + lgam(eta_v0, eta_d0, 1./var_eta(j));
         end
-        post_new = ll + foo + sum(log(mvnpdf([alpha'; beta'], loading0, loading0s))) + sum(log(mvnpdf([pi_i'; pi_w'], ar0, ar0s))) + lgam(garch_v0, garch_d0, 1./delt_bw) +  lgam( garch_v0, garch_d0, 1./delt_cw);
+        post_new = foo + log(mvnpdf([alpha'; beta'], loading0, loading0s)) + log(mvnpdf([pi_i'; pi_w'], ar0, ar0s)) + lgam(garch_v0, garch_d0, 1./delt_bw) +  lgam( garch_v0, garch_d0, 1./delt_cw);
     
         % 3. decide accept/discard the draw 
         acc_prob = min([exp(post_new - post_old); 1]);   
+    else
+        acc_prob = 0;
     end
-    u        = rand(1);
+    u        = rand(1,1);
     if u < acc_prob
         par_old     = par_new;  
         post_old    = post_new;
@@ -98,6 +100,7 @@ for ii = 1:iter
 
     if mod(ii, 500) == 0
         fprintf('Iter: %g \r', ii)
+        disp(nacc)
     end
     
 end
