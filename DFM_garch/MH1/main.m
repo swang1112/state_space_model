@@ -109,7 +109,7 @@ save('out1', 'out1');
 save('out2', 'out2');
 save('out3', 'out3');
 disp(acc_rate)
-%% plot
+%% 4. plot
 load('out1.mat')
 load('out2.mat')
 load('out3.mat')
@@ -162,7 +162,7 @@ legend('median estimate', 'true');title('conditional variances of common factor'
 for n = 1:5
     foo = foo + 1; 
     subplot(2,3,foo);
-    plot([condvar_est(:,1),h_i(:,n)]);
+    plot([condvar_est(:,n),h_i(:,n)]);
     legend('median estimate', 'true');title("conditional variances of ideosyncratic factor of country " + n + " "); axis tight;
 end
 
