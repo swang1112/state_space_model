@@ -40,7 +40,6 @@ par_old = mode';
 post_old = -post_val;
 %[HU,HS,HV] = svd(inv(post_hess));
 %S = HU * sqrt(HS)*HV';
-%S = diag(sqrt(diag(inv(post_hess))));
 S = chol(inv(post_hess));
 
 
@@ -76,7 +75,7 @@ for ii = 1:iter
     % lerning rate scheduling
     if ii > 500 && ii < 1500  
       if acc_rate > 0.4
-          S = S * 1.001;
+          S = S * 1.01;
       elseif acc_rate<0.2
           S = S * 0.99;
       end
@@ -141,12 +140,12 @@ load('R_w.mat')
 figure3 = figure;
 foo = 1;
 subplot(2,3,foo);
-plot([states_est(:,1),R_w]);
+plot([states_est(:,6),R_w]);
 legend('median estimate', 'true');title('common factor'); axis tight;
 for n = 1:5
     foo = foo + 1; 
     subplot(2,3,foo);
-    plot([states_est(:,n+1),R_i(:,n)]);
+    plot([states_est(:,n),R_i(:,n)]);
     legend('median estimate', 'true');title("ideosyncratic factor of country " + n + " "); axis tight;
 end
 
@@ -157,7 +156,7 @@ load('h_w.mat')
 figure4 = figure;
 foo = 1;
 subplot(2,3,foo);
-plot([condvar_est(:,1),h_w]);
+plot([condvar_est(:,6),h_w]);
 legend('median estimate', 'true');title('conditional variances of common factor'); axis tight;
 for n = 1:5
     foo = foo + 1; 

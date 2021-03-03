@@ -93,7 +93,7 @@ save('post_hess', 'post_hess');
 %% posterior
 function out = obj(par, data)
 
-c = 1;
+c = 0.5;
 % i) prior for loading
 L_loading = -inf;
 U_loading = inf;
@@ -102,7 +102,7 @@ L_ar = -1;
 U_ar = 1;
 % iii) prior for GARCH and variance parameters
 L_var = 0;
-U_var = inf;
+U_var = 1;
 
 out = neg_posterior_flat(par,data,c, L_loading, U_loading, L_var, U_var, L_ar, U_ar,1);
 
